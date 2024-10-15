@@ -6,7 +6,8 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>BistiAnonymous Търсачка</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cse.google.com; script-src 'self' 'unsafe-inline' https://cse.google.com; style-src 'self' 'unsafe-inline' https://cse.google.com;">
+    <title>BistiAnonymous Анонимна Търсачка</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -23,6 +24,11 @@
             color: #7d82f0;
             text-align: center;
         }
+        .logo {
+            cursor: pointer;
+            text-decoration: none;
+            color: #7d82f0;
+        }
         #search-container {
             width: 100%;
             max-width: 600px;
@@ -38,44 +44,60 @@
             background-color: #ffffff;
             color: #000000;
         }
-        #clear-search {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
+        #clear-search, #clear-data {
             background: none;
             border: none;
             color: #666;
             font-size: 18px;
             cursor: pointer;
+        }
+        #clear-search {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
             display: none;
+        }
+        #clear-data {
+            margin-top: 10px;
         }
         #results-container {
             width: 100%;
             max-width: 800px;
         }
-        #privacy-disclaimer {
+        #privacy-disclaimer, #no-js-search {
             margin-top: 20px;
             font-size: 14px;
             color: #888;
             text-align: center;
         }
+        #no-js-search {
+            display: none;
+        }
     </style>
 </head>
 <body>
-    <h1>BistiAnonymous</h1>
+    <h1><a href="/" class="logo">BistiAnonymous</a></h1>
     
     <div id="search-container">
         <input type="text" id="search-box" placeholder="Търсете анонимно...">
         <button id="clear-search">✕</button>
     </div>
     
+    <button id="clear-data">Изчисти всички данни</button>
+
     <div id="results-container">
         <div class="gcse-searchresults-only"></div>
     </div>
 
+    <form id="no-js-search" action="https://www.google.com/search" method="get" target="_blank">
+        <input type="hidden" name="cx" value="60c020d44283f4851">
+        <input type="text" name="q" placeholder="Търсене без JavaScript...">
+        <input type="submit" value="Търси">
+    </form>
+
     <div id="privacy-disclaimer">
-        <p>Поверителност: Тази търсачка използва Google Custom Search Engine. Не съхраняваме история на търсенията или лични данни на нашите сървъри. Въпреки това, Google може да събира данни съгласно тяхната политика за поверителност.</p>
+        <p>Поверителност: Тази търсачка се стреми към максимална анонимност. Не съхраняваме история на търсенията или лични данни. Въпреки това, използваме Google Custom Search Engine, което може да събира ограничени данни. За повече информация, моля, прочетете нашата <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer">политика за поверителност</a>.</p>
     </div>
 
     <script async src="https://cse.google.com/cse.js?cx=60c020d44283f4851"></script>
@@ -93,9 +115,21 @@
             console.log("Локалните данни и бисквитките бяха изчистени.");
         }
 
+        function clearUrlParameters() {
+            if (window.history && window.history.replaceState) {
+                var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        }
+
         window.onload = function() {
             var searchBox = document.getElementById('search-box');
             var clearButton = document.getElementById('clear-search');
+            var clearDataButton = document.getElementById('clear-data');
+            var noJsSearch = document.getElementById('no-js-search');
+
+            // Показване на формата за търсене без JavaScript
+            noJsSearch.style.display = 'block';
 
             searchBox.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -104,6 +138,7 @@
                         element.execute(searchBox.value);
                         setTimeout(function() {
                             clearLocalData();
+                            clearUrlParameters();
                             setTimeout(function() {
                                 searchBox.value = '';
                             }, 100);
@@ -123,6 +158,18 @@
                 clearButton.style.display = 'none';
                 searchBox.focus();
             });
+
+            clearDataButton.addEventListener('click', function() {
+                clearLocalData();
+                clearUrlParameters();
+                location.reload();
+            });
+
+            // Уважаване на Do Not Track
+            if (navigator.doNotTrack === "1") {
+                console.log("Do Not Track е активирано. Допълнително ограничаване на проследяването.");
+                // Тук можете да добавите допълнителна логика за ограничаване на проследяването
+            }
 
             var style = document.createElement('style');
             style.textContent = `
