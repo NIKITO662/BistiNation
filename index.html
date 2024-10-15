@@ -10,7 +10,7 @@
     <title>BistiAnonymous Анонимна Търсачка</title>
     <style>
         /* ... Вашият съществуващ CSS код ... */
-        #clear-data, #open-incognito {
+        #clear-data {
             margin-top: 10px;
             background: none;
             border: 1px solid #7d82f0;
@@ -30,7 +30,6 @@
     </div>
     
     <button id="clear-data">Изчисти всички данни</button>
-    <button id="open-incognito">Отвори в инкогнито режим</button>
 
     <div id="results-container">
         <div class="gcse-searchresults-only"></div>
@@ -62,26 +61,24 @@
             }
         }
 
-        function openIncognito() {
-            var incognitoUrl = 'https://duckduckgo.com/?q=' + encodeURIComponent(document.getElementById('search-box').value);
-            window.open(incognitoUrl, '_blank');
-        }
-
         window.onload = function() {
             var searchBox = document.getElementById('search-box');
             var clearButton = document.getElementById('clear-search');
             var clearDataButton = document.getElementById('clear-data');
-            var openIncognitoButton = document.getElementById('open-incognito');
 
             searchBox.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    e.preventDefault(); // Предотвратяваме стандартното поведение
-                    openIncognito(); // Отваряме търсенето в нов прозорец с DuckDuckGo
-                    setTimeout(function() {
-                        clearLocalData();
-                        clearUrlParameters();
-                        searchBox.value = '';
-                    }, 100);
+                    var element = google.search.cse.element.getElement('searchresults-only0');
+                    if (element) {
+                        element.execute(searchBox.value);
+                        setTimeout(function() {
+                            clearLocalData();
+                            clearUrlParameters();
+                            searchBox.value = '';
+                        }, 1000);
+                    } else {
+                        console.error('Search element not found');
+                    }
                 }
             });
 
@@ -100,8 +97,6 @@
                 clearUrlParameters();
                 location.reload();
             });
-
-            openIncognitoButton.addEventListener('click', openIncognito);
 
             if (navigator.doNotTrack === "1") {
                 console.log("Do Not Track е активирано. Допълнително ограничаване на проследяването.");
