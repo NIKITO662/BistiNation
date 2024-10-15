@@ -54,6 +54,12 @@
             width: 100%;
             max-width: 800px;
         }
+        #privacy-disclaimer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+        }
         #tor-warning {
             display: none;
             background-color: #ffcc00;
@@ -61,32 +67,6 @@
             padding: 10px;
             margin-top: 10px;
             border-radius: 5px;
-        }
-        .gsc-control-cse {
-            background-color: transparent !important;
-            border: none !important;
-        }
-        .gsc-results-wrapper-visible {
-            background-color: #363940 !important;
-        }
-        .gsc-webResult.gsc-result {
-            background-color: #25262a !important;
-            border: none !important;
-        }
-        .gs-title, .gs-title * {
-            color: #7d82f0 !important;
-        }
-        .gs-snippet {
-            color: #ffffff !important;
-        }
-        .gs-visibleUrl {
-            color: #8ab4f8 !important;
-        }
-        .gsc-cursor-page {
-            color: #ffffff !important;
-        }
-        .gsc-cursor-current-page {
-            color: #7d82f0 !important;
         }
     </style>
 </head>
@@ -104,9 +84,13 @@
         <div class="gcse-searchresults-only"></div>
     </div>
 
+    <div id="privacy-disclaimer">
+        <p>Поверителност: Тази търсачка използва Google Custom Search Engine. Не съхраняваме история на търсенията или лични данни на нашите сървъри. Въпреки това, Google може да събира данни съгласно тяхната политика за поверителност.</p>
+    </div>
+
     <script async src="https://cse.google.com/cse.js?cx=60c020d44283f4851"></script>
     <script>
-        function enhancedClearData() {
+        function clearLocalData() {
             localStorage.clear();
             sessionStorage.clear();
             var cookies = document.cookie.split(";");
@@ -116,17 +100,7 @@
                 var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
                 document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
             }
-            if (window.caches) {
-                caches.keys().then(function(names) {
-                    for (let name of names) caches.delete(name);
-                });
-            }
-            if (window.indexedDB) {
-                indexedDB.databases().then(function(dbs) {
-                    for (let db of dbs) indexedDB.deleteDatabase(db.name);
-                });
-            }
-            console.log("Разширено изчистване на данните завършено.");
+            console.log("Локалните данни и бисквитките бяха изчистени.");
         }
 
         function clearUrlParameters() {
@@ -136,28 +110,28 @@
             }
         }
 
-        function anonymizeSearchQuery(query) {
-            query = query.replace(/\b(?:\d{3}-\d{2}-\d{4}|\d{10})\b/g, '[REDACTED]');
-            query += ' ' + Math.random().toString(36).substring(7);
-            return query;
-        }
+        function handleOnionLinks() {
+            var links = document.querySelectorAll('a');
+            var torWarning = document.getElementById('tor-warning');
+            
+            links.forEach(function(link) {
+                if (link.href.includes('.onion')) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        var onionUrl = link.href;
+                        var proxyUrl = 'https://your-tor-proxy-service.com/fetch?url=' + encodeURIComponent(onionUrl);
+                        
+                        var message = 'Това е .onion линк: ' + onionUrl + '\n\n' +
+                                      'Този линк ще бъде отворен чрез прокси услуга. ' +
+                                      'Имайте предвид, че това може да повлияе на вашата анонимност.';
+                        torWarning.textContent = message;
+                        torWarning.style.display = 'block';
 
-        function enhancedOnionLinkHandling(link) {
-            if (link.href.includes('.onion')) {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    var onionUrl = link.href;
-                    var proxyUrl = 'https://your-tor-gateway.com/' + encodeURIComponent(onionUrl);
-                    
-                    var message = 'Това е .onion линк: ' + onionUrl + '\n\n' +
-                                  'Този линк ще бъде отворен чрез специализиран Tor прокси. ' +
-                                  'Моля, имайте предвид, че това може да повлияе на вашата анонимност.';
-                    document.getElementById('tor-warning').textContent = message;
-                    document.getElementById('tor-warning').style.display = 'block';
-
-                    window.open(proxyUrl, '_blank');
-                });
-            }
+                        // Отваряме прокси URL в нов прозорец
+                        window.open(proxyUrl, '_blank');
+                    });
+                }
+            });
         }
 
         window.onload = function() {
@@ -166,14 +140,13 @@
 
             searchBox.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
-                    var anonymizedQuery = anonymizeSearchQuery(searchBox.value);
                     var element = google.search.cse.element.getElement('searchresults-only0');
                     if (element) {
-                        element.execute(anonymizedQuery);
+                        element.execute(searchBox.value);
                         setTimeout(function() {
-                            enhancedClearData();
+                            clearLocalData();
                             clearUrlParameters();
-                            document.querySelectorAll('a').forEach(enhancedOnionLinkHandling);
+                            handleOnionLinks();
                             setTimeout(function() {
                                 searchBox.value = '';
                             }, 100);
@@ -194,17 +167,50 @@
                 searchBox.focus();
             });
 
+            // Наблюдаваме за промени в DOM, за да обработим динамично добавени .onion линкове
             var observer = new MutationObserver(function(mutations) {
                 mutations.forEach(function(mutation) {
                     if (mutation.type === 'childList') {
-                        document.querySelectorAll('a').forEach(enhancedOnionLinkHandling);
+                        handleOnionLinks();
                     }
                 });
             });
 
             observer.observe(document.body, { childList: true, subtree: true });
 
-            enhancedClearData();
+            // Извикваме handleOnionLinks() веднага след зареждане на страницата
+            handleOnionLinks();
+
+            var style = document.createElement('style');
+            style.textContent = `
+                .gsc-control-cse {
+                    background-color: transparent !important;
+                    border: none !important;
+                }
+                .gsc-results-wrapper-visible {
+                    background-color: #363940 !important;
+                }
+                .gsc-webResult.gsc-result {
+                    background-color: #25262a !important;
+                    border: none !important;
+                }
+                .gs-title, .gs-title * {
+                    color: #7d82f0 !important;
+                }
+                .gs-snippet {
+                    color: #ffffff !important;
+                }
+                .gs-visibleUrl {
+                    color: #8ab4f8 !important;
+                }
+                .gsc-cursor-page {
+                    color: #ffffff !important;
+                }
+                .gsc-cursor-current-page {
+                    color: #7d82f0 !important;
+                }
+            `;
+            document.head.appendChild(style);
         };
     </script>
 </body>
