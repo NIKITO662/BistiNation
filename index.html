@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>BistiAnonymous Търсачка</title>
     <style>
         body {
@@ -51,6 +54,12 @@
             width: 100%;
             max-width: 800px;
         }
+        #privacy-disclaimer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -65,8 +74,25 @@
         <div class="gcse-searchresults-only"></div>
     </div>
 
+    <div id="privacy-disclaimer">
+        <p>Поверителност: Тази търсачка използва Google Custom Search Engine. Не съхраняваме история на търсенията или лични данни на нашите сървъри. Въпреки това, Google може да събира данни съгласно тяхната политика за поверителност.</p>
+    </div>
+
     <script async src="https://cse.google.com/cse.js?cx=60c020d44283f4851"></script>
     <script>
+        function clearLocalData() {
+            localStorage.clear();
+            sessionStorage.clear();
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
+            }
+            console.log("Локалните данни и бисквитките бяха изчистени.");
+        }
+
         window.onload = function() {
             var searchBox = document.getElementById('search-box');
             var clearButton = document.getElementById('clear-search');
@@ -76,6 +102,12 @@
                     var element = google.search.cse.element.getElement('searchresults-only0');
                     if (element) {
                         element.execute(searchBox.value);
+                        setTimeout(function() {
+                            clearLocalData();
+                            setTimeout(function() {
+                                searchBox.value = '';
+                            }, 100);
+                        }, 1000);
                     } else {
                         console.error('Search element not found');
                     }
