@@ -6,37 +6,76 @@
     <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://cse.google.com; script-src 'self' 'unsafe-inline' https://cse.google.com; style-src 'self' 'unsafe-inline' https://cse.google.com;">
-    <title>BistiAnonymous Анонимна Търсачка</title>
+    <title>BistiAnonymous</title>
     <style>
-        /* ... Вашият съществуващ CSS код ... */
-        #clear-data {
-            margin-top: 10px;
-            background: none;
-            border: 1px solid #7d82f0;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #25262a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        h1 {
             color: #7d82f0;
-            padding: 5px 10px;
-            border-radius: 5px;
+            text-align: center;
+        }
+        #search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        #search-box {
+            width: 100%;
+            padding: 10px 30px 10px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 24px;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        #clear-search {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 18px;
             cursor: pointer;
+            display: none;
+        }
+        #results-container {
+            width: 100%;
+            max-width: 800px;
+        }
+        #privacy-disclaimer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1><a href="/" class="logo">BistiAnonymous</a></h1>
+    <h1>BistiAnonymous</h1>
     
     <div id="search-container">
         <input type="text" id="search-box" placeholder="Търсете анонимно...">
         <button id="clear-search">✕</button>
     </div>
     
-    <button id="clear-data">Изчисти всички данни</button>
-
     <div id="results-container">
         <div class="gcse-searchresults-only"></div>
     </div>
 
     <div id="privacy-disclaimer">
-        <p>Поверителност: Тази търсачка се стреми към максимална анонимност. Не съхраняваме история на търсенията или лични данни. Въпреки това, използваме Google Custom Search Engine, което може да събира ограничени данни. За повече информация, моля, прочетете нашата <a href="/privacy-policy.html" target="_blank" rel="noopener noreferrer">политика за поверителност</a>.</p>
+        <p>Поверителност: Тази търсачка използва Google Custom Search Engine. Не съхраняваме история на търсенията или лични данни на нашите сървъри. Въпреки това, Google може да събира данни съгласно тяхната политика за поверителност.</p>
     </div>
 
     <script async src="https://cse.google.com/cse.js?cx=60c020d44283f4851"></script>
@@ -54,17 +93,9 @@
             console.log("Локалните данни и бисквитките бяха изчистени.");
         }
 
-        function clearUrlParameters() {
-            if (window.history && window.history.replaceState) {
-                var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                window.history.replaceState({}, document.title, cleanUrl);
-            }
-        }
-
         window.onload = function() {
             var searchBox = document.getElementById('search-box');
             var clearButton = document.getElementById('clear-search');
-            var clearDataButton = document.getElementById('clear-data');
 
             searchBox.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -73,8 +104,9 @@
                         element.execute(searchBox.value);
                         setTimeout(function() {
                             clearLocalData();
-                            clearUrlParameters();
-                            searchBox.value = '';
+                            setTimeout(function() {
+                                searchBox.value = '';
+                            }, 100);
                         }, 1000);
                     } else {
                         console.error('Search element not found');
@@ -92,25 +124,36 @@
                 searchBox.focus();
             });
 
-            clearDataButton.addEventListener('click', function() {
-                clearLocalData();
-                clearUrlParameters();
-                location.reload();
-            });
-
-            if (navigator.doNotTrack === "1") {
-                console.log("Do Not Track е активирано. Допълнително ограничаване на проследяването.");
-            }
-
-            // Предотвратяваме запазването на историята
-            if (window.history && window.history.pushState) {
-                window.history.pushState(null, null, window.location.href);
-                window.onpopstate = function () {
-                    window.history.go(1);
-                };
-            }
-
-            // ... Вашият съществуващ код за стилизиране на резултатите от търсенето ...
+            var style = document.createElement('style');
+            style.textContent = `
+                .gsc-control-cse {
+                    background-color: transparent !important;
+                    border: none !important;
+                }
+                .gsc-results-wrapper-visible {
+                    background-color: #363940 !important;
+                }
+                .gsc-webResult.gsc-result {
+                    background-color: #25262a !important;
+                    border: none !important;
+                }
+                .gs-title, .gs-title * {
+                    color: #7d82f0 !important;
+                }
+                .gs-snippet {
+                    color: #ffffff !important;
+                }
+                .gs-visibleUrl {
+                    color: #8ab4f8 !important;
+                }
+                .gsc-cursor-page {
+                    color: #ffffff !important;
+                }
+                .gsc-cursor-current-page {
+                    color: #7d82f0 !important;
+                }
+            `;
+            document.head.appendChild(style);
         };
     </script>
 </body>
