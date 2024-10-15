@@ -1,307 +1,274 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="bg">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      http-equiv="Cache-Control"
-      content="no-store, no-cache, must-revalidate, max-age=0"
-    />
-    <meta http-equiv="Pragma" content="no-cache" />
-    <meta http-equiv="Expires" content="0" />
-    <title>BistiAnonymous Търсачка</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>BistiAnonymous</title>
+    <link rel="icon" type="image/png" href="https://i.ibb.co/dDPhB6F/tree2-removebg-preview.png">
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #25262a;
-        color: #ffffff;
-        margin: 0;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-      }
-      header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-bottom: 20px;
-      }
-      #site-logo {
-        width: 100px;
-        height: auto;
-        margin-right: 20px;
-      }
-      h1 {
-        color: #7d82f0;
-        text-align: center;
-      }
-      #search-container {
-        width: 100%;
-        max-width: 600px;
-        margin-bottom: 20px;
-        position: relative;
-      }
-      #search-box {
-        width: 100%;
-        padding: 10px 30px 10px 10px;
-        font-size: 16px;
-        border: none;
-        border-radius: 0;
-        background-color: #363940;
-        color: #ffffff;
-        box-shadow: none;
-      }
-      #clear-search {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        color: #888;
-        font-size: 18px;
-        cursor: pointer;
-        display: none;
-      }
-      #results-container {
-        width: 100%;
-        max-width: 800px;
-        background-color: #363940;
-        padding: 20px;
-        margin-top: 20px;
-      }
-      #about-us {
-        margin-top: 20px;
-        padding: 20px;
-        background-color: #363940;
-        max-width: 800px;
-        width: 100%;
-      }
-      #about-us h2 {
-        color: #7d82f0;
-        margin-bottom: 15px;
-      }
-      #privacy-disclaimer {
-        margin-top: 20px;
-        font-size: 14px;
-        color: #888;
-        text-align: center;
-      }
-      #copyright {
-        margin-top: 20px;
-        font-size: 12px;
-        color: #888;
-        text-align: center;
-      }
-      #tor-warning {
-        display: none;
-        background-color: #ffcc00;
-        color: #000;
-        padding: 10px;
-        margin-top: 10px;
-      }
-      .gcse-searchresults-only {
-        background-color: transparent !important;
-      }
-      .gsc-control-cse {
-        background-color: transparent !important;
-        border: none !important;
-      }
-      .gsc-result {
-        background-color: #2c2e33 !important;
-        border: 1px solid #444 !important;
-        margin-bottom: 10px !important;
-        padding: 10px !important;
-      }
-      .gsc-result .gs-title {
-        color: #7d82f0 !important;
-      }
-      .gsc-url-top {
-        color: #888 !important;
-      }
-      .gs-snippet {
-        color: #ccc !important;
-      }
-      .gs-no-results-result {
-        display: none !important;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #25262a;
+            color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        #site-logo {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+        h1 {
+            color: #7d82f0;
+            text-align: center;
+        }
+        #search-container {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        #search-box {
+            width: 100%;
+            padding: 10px 30px 10px 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 0;
+            background-color: #363940;
+            color: #ffffff;
+            box-shadow: none;
+        }
+        #clear-search {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+        }
+        #results-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: #363940;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        #about-us {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #363940;
+            max-width: 800px;
+            width: 100%;
+        }
+        #about-us h2 {
+            color: #7d82f0;
+            margin-bottom: 15px;
+        }
+        #privacy-disclaimer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+        }
+        #copyright {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+        #tor-warning {
+            display: none;
+            background-color: #ffcc00;
+            color: #000;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        .gcse-searchresults-only {
+            background-color: transparent !important;
+        }
+        .gsc-control-cse {
+            background-color: transparent !important;
+            border: none !important;
+        }
+        .gsc-result {
+            background-color: #2c2e33 !important;
+            border: 1px solid #444 !important;
+            margin-bottom: 10px !important;
+            padding: 10px !important;
+        }
+        .gsc-result .gs-title {
+            color: #7d82f0 !important;
+        }
+        .gsc-url-top {
+            color: #888 !important;
+        }
+        .gs-snippet {
+            color: #ccc !important;
+        }
+        .gs-no-results-result {
+            display: none !important;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <img
-        src="https://i.ibb.co/dDPhB6F/tree2-removebg-preview.png"
-        alt="BistiAnonymous Logo"
-        id="site-logo"
-      />
-      <h1>BistiAnonymous</h1>
+        <img src="https://i.ibb.co/dDPhB6F/tree2-removebg-preview.png" alt="BistiAnonymous Logo" id="site-logo">
+        <h1>BistiAnonymous</h1>
     </header>
-
+    
     <div id="search-container">
-      <input type="text" id="search-box" placeholder="Търсете анонимно..." />
-      <button id="clear-search">✕</button>
+        <input type="text" id="search-box" placeholder="Търсете анонимно...">
+        <button id="clear-search">✕</button>
     </div>
-
+    
     <div id="tor-warning"></div>
 
     <div id="results-container">
-      <div class="gcse-searchresults-only"></div>
+        <div class="gcse-searchresults-only"></div>
     </div>
 
     <div id="about-us">
-      <h2>За нас</h2>
-      <p>
-        BistiAnonymous е проект на BistiNation, посветен на осигуряването на
-        анонимно и сигурно онлайн търсене. Нашата мисия е да защитим правото на
-        потребителите на поверителност в дигиталния свят, предоставяйки
-        инструмент за търсене, който не събира лични данни и използва
-        усъвършенствани методи за анонимизация.
-      </p>
-      <p>
-        Ние вярваме, че достъпът до информация не трябва да компрометира вашата
-        поверителност. С BistiAnonymous можете да търсите свободно, знаейки, че
-        вашата онлайн активност остава защитена.
-      </p>
+        <h2>За нас</h2>
+        <p>BistiAnonymous е проект на BistiNation, посветен на осигуряването на анонимно и сигурно онлайн търсене. Нашата мисия е да защитим правото на потребителите на поверителност в дигиталния свят, предоставяйки инструмент за търсене, който не събира лични данни и използва усъвършенствани методи за анонимизация.</p>
+        <p>Ние вярваме, че достъпът до информация не трябва да компрометира вашата поверителност. С BistiAnonymous можете да търсите свободно, знаейки, че вашата онлайн активност остава защитена.</p>
     </div>
 
     <div id="privacy-disclaimer">
-      <p>
-        Поверителност: Тази търсачка използва подобрени методи за анонимност.
-      </p>
+        <p>Поверителност: Тази търсачка използва подобрени методи за анонимност.</p>
     </div>
 
     <div id="copyright">
-      <p>&copy; 2024 BistiNation и BistiAnonymous. Всички права запазени.</p>
+        <p>&copy; 2024 BistiNation и BistiAnonymous. Всички права запазени.</p>
     </div>
 
-    <script
-      async
-      src="https://cse.google.com/cse.js?cx=60c020d44283f4851"
-    ></script>
+    <script async src="https://cse.google.com/cse.js?cx=60c020d44283f4851"></script>
     <script>
-      function enhancedClearData() {
-        localStorage.clear()
-        sessionStorage.clear()
-        var cookies = document.cookie.split(";")
-        for (var i = 0; i < cookies.length; i++) {
-          var cookie = cookies[i]
-          var eqPos = cookie.indexOf("=")
-          var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie
-          document.cookie =
-            name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/"
-        }
-        if (window.caches) {
-          caches.keys().then(function (names) {
-            for (let name of names) caches.delete(name)
-          })
-        }
-        if (window.indexedDB) {
-          indexedDB.databases().then(function (dbs) {
-            for (let db of dbs) indexedDB.deleteDatabase(db.name)
-          })
-        }
-        console.log("Разширено изчистване на данните завършено.")
-      }
-
-      function clearUrlParameters() {
-        if (window.history && window.history.replaceState) {
-          var cleanUrl =
-            window.location.protocol +
-            "//" +
-            window.location.host +
-            window.location.pathname
-          window.history.replaceState({}, document.title, cleanUrl)
-        }
-      }
-
-      function anonymizeSearchQuery(query) {
-        query = query.replace(/\b(?:\d{3}-\d{2}-\d{4}|\d{10})\b/g, "[REDACTED]")
-        return query + " " + Math.random().toString(36).substring(7)
-      }
-
-      function handleOnionLinks() {
-        var links = document.querySelectorAll("a")
-        var torWarning = document.getElementById("tor-warning")
-
-        links.forEach(function (link) {
-          if (link.href.includes(".onion")) {
-            link.addEventListener("click", function (e) {
-              e.preventDefault()
-              var onionUrl = link.href
-              var proxyUrl =
-                "https://your-tor-proxy-service.com/fetch?url=" +
-                encodeURIComponent(onionUrl)
-
-              var message =
-                "Това е .onion линк: " +
-                onionUrl +
-                "\n\n" +
-                "Този линк ще бъде отворен чрез прокси услуга. " +
-                "Имайте предвид, че това може да повлияе на вашата анонимност."
-              torWarning.textContent = message
-              torWarning.style.display = "block"
-
-              window.open(proxyUrl, "_blank")
-            })
-          }
-        })
-      }
-
-      window.onload = function () {
-        var searchBox = document.getElementById("search-box")
-        var clearButton = document.getElementById("clear-search")
-
-        searchBox.addEventListener("keypress", function (e) {
-          if (e.key === "Enter") {
-            var anonymizedQuery = anonymizeSearchQuery(searchBox.value)
-            var element = google.search.cse.element.getElement(
-              "searchresults-only0",
-            )
-            if (element) {
-              element.execute(anonymizedQuery)
-              setTimeout(function () {
-                enhancedClearData()
-                clearUrlParameters()
-                handleOnionLinks()
-                setTimeout(function () {
-                  searchBox.value = ""
-                }, 100)
-              }, 1000)
-            } else {
-              console.error("Search element not found")
+        function enhancedClearData() {
+            localStorage.clear();
+            sessionStorage.clear();
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/";
             }
-          }
-        })
-
-        searchBox.addEventListener("input", function () {
-          clearButton.style.display = this.value ? "block" : "none"
-        })
-
-        clearButton.addEventListener("click", function () {
-          searchBox.value = ""
-          clearButton.style.display = "none"
-          searchBox.focus()
-        })
-
-        var observer = new MutationObserver(function (mutations) {
-          mutations.forEach(function (mutation) {
-            if (mutation.type === "childList") {
-              handleOnionLinks()
+            if (window.caches) {
+                caches.keys().then(function(names) {
+                    for (let name of names) caches.delete(name);
+                });
             }
-          })
-        })
+            if (window.indexedDB) {
+                indexedDB.databases().then(function(dbs) {
+                    for (let db of dbs) indexedDB.deleteDatabase(db.name);
+                });
+            }
+            console.log("Разширено изчистване на данните завършено.");
+        }
 
-        observer.observe(document.body, { childList: true, subtree: true })
+        function clearUrlParameters() {
+            if (window.history && window.history.replaceState) {
+                var cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.replaceState({}, document.title, cleanUrl);
+            }
+        }
 
-        handleOnionLinks()
-        enhancedClearData()
+        function anonymizeSearchQuery(query) {
+            query = query.replace(/\b(?:\d{3}-\d{2}-\d{4}|\d{10})\b/g, '[REDACTED]');
+            return query + ' ' + Math.random().toString(36).substring(7);
+        }
 
-        var currentYear = new Date().getFullYear()
-        document.getElementById("copyright").innerHTML =
-          `<p>&copy; ${currentYear} BistiNation и BistiAnonymous. Всички права запазени.</p>`
-      }
+        function handleOnionLinks() {
+            var links = document.querySelectorAll('a');
+            var torWarning = document.getElementById('tor-warning');
+            
+            links.forEach(function(link) {
+                if (link.href.includes('.onion')) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        var onionUrl = link.href;
+                        var proxyUrl = 'https://your-tor-proxy-service.com/fetch?url=' + encodeURIComponent(onionUrl);
+                        
+                        var message = 'Това е .onion линк: ' + onionUrl + '\n\n' +
+                                      'Този линк ще бъде отворен чрез прокси услуга. ' +
+                                      'Имайте предвид, че това може да повлияе на вашата анонимност.';
+                        torWarning.textContent = message;
+                        torWarning.style.display = 'block';
+
+                        window.open(proxyUrl, '_blank');
+                    });
+                }
+            });
+        }
+
+        window.onload = function() {
+            var searchBox = document.getElementById('search-box');
+            var clearButton = document.getElementById('clear-search');
+
+            searchBox.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    var anonymizedQuery = anonymizeSearchQuery(searchBox.value);
+                    var element = google.search.cse.element.getElement('searchresults-only0');
+                    if (element) {
+                        element.execute(anonymizedQuery);
+                        setTimeout(function() {
+                            enhancedClearData();
+                            clearUrlParameters();
+                            handleOnionLinks();
+                            setTimeout(function() {
+                                searchBox.value = '';
+                            }, 100);
+                        }, 1000);
+                    } else {
+                        console.error('Search element not found');
+                    }
+                }
+            });
+
+            searchBox.addEventListener('input', function() {
+                clearButton.style.display = this.value ? 'block' : 'none';
+            });
+
+            clearButton.addEventListener('click', function() {
+                searchBox.value = '';
+                clearButton.style.display = 'none';
+                searchBox.focus();
+            });
+
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        handleOnionLinks();
+                    }
+                });
+            });
+
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            handleOnionLinks();
+            enhancedClearData();
+
+            var currentYear = new Date().getFullYear();
+            document.getElementById('copyright').innerHTML = 
+                `<p>&copy; ${currentYear} BistiNation и BistiAnonymous. Всички права запазени.</p>`;
+        };
     </script>
-  </body>
+</body>
 </html>
