@@ -118,8 +118,17 @@
                 if (link.href.includes('.onion')) {
                     link.addEventListener('click', function(e) {
                         e.preventDefault();
+                        var onionUrl = link.href;
+                        var proxyUrl = 'https://your-tor-proxy-service.com/fetch?url=' + encodeURIComponent(onionUrl);
+                        
+                        var message = 'Това е .onion линк: ' + onionUrl + '\n\n' +
+                                      'Този линк ще бъде отворен чрез прокси услуга. ' +
+                                      'Имайте предвид, че това може да повлияе на вашата анонимност.';
+                        torWarning.textContent = message;
                         torWarning.style.display = 'block';
-                        torWarning.innerHTML = 'За да отворите ' + link.href + ', трябва да използвате Tor браузър.';
+
+                        // Отваряме прокси URL в нов прозорец
+                        window.open(proxyUrl, '_blank');
                     });
                 }
             });
@@ -168,6 +177,9 @@
             });
 
             observer.observe(document.body, { childList: true, subtree: true });
+
+            // Извикваме handleOnionLinks() веднага след зареждане на страницата
+            handleOnionLinks();
 
             var style = document.createElement('style');
             style.textContent = `
