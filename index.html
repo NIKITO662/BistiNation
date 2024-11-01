@@ -120,7 +120,6 @@
         <div class="biCoins">BiCoins: <span id="biCoins">0</span></div>
         <button onclick="toggleInventory()">Инвентар</button>
         <button onclick="showAurasChance()">Шансове за Аури</button>
-        <button id="autoRollButton" onclick="toggleAutoRoll()" style="display: none;">Auto Roll</button>
     </div>
     <button id="rollButton" onclick="roll()" style="margin-top: 20px; display: none;">Roll</button>
     <div class="result" id="result"></div>
@@ -129,21 +128,6 @@
         <button class="close-btn" onclick="toggleInventory()">X</button>
         <ul id="inventoryList"></ul>
         <button id="sellButton" onclick="sellAura()" style="display: none;">Sell</button>
-    </div>
-    <div class="buy-now" id="buyNow" style="display: none;">
-        <p>Искате ли да купите Auto Roll за 200 BiCoins?</p>
-        <button onclick="purchaseAutoRoll()">Да</button>
-        <button onclick="cancelPurchase()">Не</button>
-    </div>
-
-    <div class="music-player">
-        <h2>Слушайте своя Spotify Playlist</h2>
-        <button onclick="toggleSpotify()">Свий/Разшири</button>
-        <div id="spotifySection" style="display: none;">
-            <input type="text" id="spotifyUrl" placeholder="Въведете Spotify Playlist URL" />
-            <button onclick="loadSpotifyPlaylist()">Зареди плейлист</button>
-            <div id="spotifyEmbed"></div>
-        </div>
     </div>
 
     <footer style="margin-top: 20px; text-align: center; color: gray;">
@@ -221,10 +205,10 @@
         }
 
         function loginWithDiscord() {
-            const clientId = 'YOUR_DISCORD_CLIENT_ID'; // Заменете с вашия Discord Client ID
-            const redirectUri = encodeURIComponent('YOUR_REDIRECT_URI'); // Заменете с вашия Redirect URI
+            const clientId = '1301883048433942662'; // Вашият Discord Client ID
+            const redirectUri = encodeURIComponent('https://nikito662.github.io/BistiNation/'); // Вашият Redirect URI
             const scope = 'identify'; // Права за достъп
-            const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
+            const discordAuthUrl = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=${scope}`;
             window.location.href = discordAuthUrl; // Пренасочване към Discord за вход
         }
 
