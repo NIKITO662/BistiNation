@@ -63,19 +63,6 @@
             transition: transform 0.5s; /* Плавен преход за анимацията */
         }
 
-        .spin {
-            animation: spin 0.5s forwards; /* Анимация на завъртане */
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg); /* Начална позиция */
-            }
-            to {
-                transform: rotate(360deg); /* Крайна позиция */
-            }
-        }
-
         .inventory {
             margin-top: 20px; /* Отстояние над инвентара */
             text-align: center; /* Центриране на текста */
@@ -97,15 +84,6 @@
             margin-top: 20px; /* Отстояние над футера */
             text-align: center; /* Центриране на текста */
             color: gray; /* Цвят на текста */
-        }
-
-        .music-player {
-            margin-top: 20px; /* Отстояние над музикалния плейър */
-            text-align: center; /* Центриране на текста */
-        }
-
-        .login-button {
-            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -231,6 +209,7 @@
                         document.getElementById('gameControls').style.display = 'flex'; // Показване на контролите на играта
                         startTimer(); // Стартиране на таймера
                         loadInventory(); // Зареждане на инвентара от localStorage
+                        document.getElementById('rollButton').style.display = 'block'; // Показване на бутона за Roll
                     });
                 }
             }
@@ -305,7 +284,6 @@
 
             if (selectedAura) {
                 addAuraToInventory(selectedAura); // Add the rolled aura to the inventory
-                sendDiscordNotification(selectedAura); // Send notification to Discord
                 document.getElementById("result").textContent = `Получихте: ${selectedAura.name}!`;
             } else {
                 document.getElementById("result").textContent = "Няма получена аура.";
@@ -314,31 +292,13 @@
             canRoll = true; // Enable rolling again
         }
 
-        function sendDiscordNotification(aura) {
-            const webhookURL = 'https://discord.com/api/webhooks/1301879434436939848/ZRG3iTfPTxIuEI7c-IEM0ESoYr2YTrjsGfE5saaHneVdIeJm6hho3WwjWK7n41kWDpos'; // Вашият Webhook URL
-            const message = {
-                content: `🎉 ${discordUser.username} получи ${aura.name} (${aura.chance})!`, // Използване на Discord името
-            };
-
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(message),
-            })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Error sending Discord notification:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error sending Discord notification:', error);
-            });
-        }
-
         // Обработване на отговора от Discord
         handleDiscordResponse();
+
+        function toggleInventory() {
+            const inventory = document.getElementById("inventory");
+            inventory.style.display = inventory.style.display === "none" || inventory.style.display === "" ? "block" : "none"; // Превключване на видимостта
+        }
     </script>
 </body>
 </html>
