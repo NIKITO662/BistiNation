@@ -63,6 +63,19 @@
             transition: transform 0.5s; /* Плавен преход за анимацията */
         }
 
+        .spin {
+            animation: spin 0.5s forwards; /* Анимация на завъртане */
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg); /* Начална позиция */
+            }
+            to {
+                transform: rotate(360deg); /* Крайна позиция */
+            }
+        }
+
         .inventory {
             margin-top: 20px; /* Отстояние над инвентара */
             text-align: center; /* Центриране на текста */
@@ -250,19 +263,25 @@
             const existingAura = Array.from(inventoryList.children).find(item => item.textContent.includes(aura.name));
 
             if (existingAura) {
-                // Update count if aura already exists
-                const count = parseInt(existingAura.dataset.count) + 1;
-                existingAura.dataset.count = count;
-                existingAura.textContent = `${aura.name} x${count} (${aura.chance})`;
+                // Проверка за лимит от 10
+                const count = parseInt(existingAura.dataset.count);
+                if (count >= 10) {
+                    alert(`Не можете да имате повече от 10 ${aura.name} аури!`); // Известие за лимит
+                    return; // Не добавяйте нова аура
+                }
+                
+                // Увеличаване на броя, ако аурата вече съществува
+                existingAura.dataset.count = count + 1;
+                existingAura.textContent = `${aura.name} x${existingAura.dataset.count} (${aura.chance})`;
             } else {
-                // Add new aura to inventory
+                // Добавяне на нова аура в инвентара
                 const listItem = document.createElement("li");
                 listItem.textContent = `${aura.name} x1 (${aura.chance})`;
-                listItem.dataset.count = 1; // Store count in dataset
+                listItem.dataset.count = 1; // Запазване на броя в dataset
                 inventoryList.appendChild(listItem);
             }
 
-            // Show the Sell button if there are items in the inventory
+            // Показване на бутона за продажба, ако инвентарът не е празен
             document.getElementById("sellButton").style.display = inventoryList.children.length > 0 ? "block" : "none";
             saveInventory(); // Запазване на инвентара
         }
@@ -271,10 +290,10 @@
             if (!canRoll) return;
 
             canRoll = false; // Disable rolling
-            const randomValue = Math.random() * 100; // Generate a random number between 0 and 100
+            const randomValue = Math.random() * 100; // Генериране на случайно число между 0 и 100
             let selectedAura = null;
 
-            // Determine which aura is rolled based on the probabilities
+            // Определяне на коя аура да се получи на базата на вероятностите
             for (const aura of auras) {
                 if (randomValue <= aura.probability) {
                     selectedAura = aura;
@@ -282,23 +301,34 @@
                 }
             }
 
-            if (selectedAura) {
-                addAuraToInventory(selectedAura); // Add the rolled aura to the inventory
-                document.getElementById("result").textContent = `Получихте: ${selectedAura.name}!`;
-            } else {
-                document.getElementById("result").textContent = "Няма получена аура.";
+            // Ако не е избрана аура, изберете произволна аура от списъка
+            if (!selectedAura) {
+                const randomIndex = Math.floor(Math.random() * auras.length);
+                selectedAura = auras[randomIndex];
             }
 
-            canRoll = true; // Enable rolling again
-        }
+            addAuraToInventory(selectedAura); // Добавяне на получената аура в инвентара
+            document.getElementById("result").textContent = `Получихте: ${selectedAura.name}!`;
 
-        // Обработване на отговора от Discord
-        handleDiscordResponse();
+            // Добавяне на анимация
+            const resultElement = document.getElementById("result");
+            resultElement.classList.add("spin");
+
+            // Премахване на анимацията след завършване
+            setTimeout(() => {
+                resultElement.classList.remove("spin");
+            }, 500); // Времето на анимацията
+
+            canRoll = true; // Позволяване на ново завъртане
+        }
 
         function toggleInventory() {
             const inventory = document.getElementById("inventory");
             inventory.style.display = inventory.style.display === "none" || inventory.style.display === "" ? "block" : "none"; // Превключване на видимостта
         }
+
+        // Обработване на отговора от Discord
+        handleDiscordResponse();
     </script>
 </body>
 </html>
